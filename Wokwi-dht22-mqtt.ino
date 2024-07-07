@@ -3,24 +3,25 @@
 #include <DHTesp.h> // Include DHT library
 
 // WiFi settings
-const char* ssid = "Wokwi-GUEST";
-const char* password = "";
+const char *ssid = "Wokwi-GUEST";
+const char *password = "";
 
 // MQTT settings
-const char* mqtt_server = "test.mosquitto.org";
+const char *mqtt_server = "test.mosquitto.org";
 const int mqtt_port = 1883;
-const char* mqtt_user = "";  
-const char* mqtt_password = "";   
-const char* sensorDataTopic = "sensor/data"; // MQTT topic for sensor data
+const char *mqtt_user = "";
+const char *mqtt_password = "";
+const char *sensorDataTopic = "sensor/data"; // MQTT topic for sensor data
 
-const int DHT_PIN = 23; // DHT22 sensor pin
+const int DHT_PIN = 23;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 DHTesp dht; // Initialize DHT sensor object
 
-void setup_wifi() {
+void setup_wifi()
+{
   delay(10);
   Serial.println();
   Serial.print("Connecting to ");
@@ -28,7 +29,8 @@ void setup_wifi() {
 
   WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
     Serial.print(".");
   }
@@ -39,14 +41,19 @@ void setup_wifi() {
   Serial.println(WiFi.localIP());
 }
 
-void reconnect() {
-  while (!client.connected()) {
+void reconnect()
+{
+  while (!client.connected())
+  {
     Serial.print("Attempting MQTT connection...");
     String clientId = "ESP32Client-";
     clientId += String(random(0xffff), HEX);
-    if (client.connect(clientId.c_str(), mqtt_user, mqtt_password)) {
+    if (client.connect(clientId.c_str(), mqtt_user, mqtt_password))
+    {
       Serial.println("connected");
-    } else {
+    }
+    else
+    {
       Serial.print("failed, rc=");
       Serial.print(client.state());
       Serial.println(" try again in 5 seconds");
@@ -55,26 +62,30 @@ void reconnect() {
   }
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
   setup_wifi();
   client.setServer(mqtt_server, mqtt_port);
-  
+
   dht.setup(DHT_PIN, DHTesp::DHT22); // Initialize DHT sensor
-  
+
   // Wait a few seconds to stabilize sensor readings
   delay(2000);
 }
 
-void loop() {
-  if (!client.connected()) {
+void loop()
+{
+  if (!client.connected())
+  {
     reconnect();
   }
 
   // Read data from DHT sensor
   TempAndHumidity data = dht.getTempAndHumidity();
-  
-  if (isnan(data.temperature) || isnan(data.humidity)) {
+
+  if (isnan(data.temperature) || isnan(data.humidity))
+  {
     Serial.println("Failed to read from DHT sensor!");
     delay(2000);
     return;
