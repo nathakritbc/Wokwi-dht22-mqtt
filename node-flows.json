@@ -1,0 +1,139 @@
+[
+    {
+        "id": "4260c634b8eaa789",
+        "type": "tab",
+        "label": "Flow 4",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9a1358ae444bf144",
+        "type": "mqtt in",
+        "z": "4260c634b8eaa789",
+        "name": "",
+        "topic": "sensor/data",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "32f24c8435ba22f0",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 110,
+        "y": 360,
+        "wires": [
+            [
+                "d3e8f5913daeb93a",
+                "350b973d1d109b9a"
+            ]
+        ]
+    },
+    {
+        "id": "98143924125c2c5d",
+        "type": "debug",
+        "z": "4260c634b8eaa789",
+        "name": "debug 12",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "900d457ff5d9c905",
+        "type": "mysql",
+        "z": "4260c634b8eaa789",
+        "mydb": "1721d0aa0153c53f",
+        "name": "sensor mysql",
+        "x": 570,
+        "y": 360,
+        "wires": [
+            [
+                "98143924125c2c5d"
+            ]
+        ]
+    },
+    {
+        "id": "350b973d1d109b9a",
+        "type": "function",
+        "z": "4260c634b8eaa789",
+        "name": "function 1",
+        "func": "const temperature = msg.payload.temperature\nconst humidity = msg.payload.humidity\n\nmsg.payload = [temperature, humidity];\nmsg.topic = \"INSERT INTO sensor (`temperature`, `humidity`) VALUES (?, ?);\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 360,
+        "wires": [
+            [
+                "900d457ff5d9c905"
+            ]
+        ]
+    },
+    {
+        "id": "d3e8f5913daeb93a",
+        "type": "debug",
+        "z": "4260c634b8eaa789",
+        "name": "debug 13",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 340,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "32f24c8435ba22f0",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "1721d0aa0153c53f",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "node-red-api",
+        "tz": "",
+        "charset": "UTF8"
+    }
+]
