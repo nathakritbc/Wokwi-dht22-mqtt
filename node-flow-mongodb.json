@@ -1,0 +1,204 @@
+[
+    {
+        "id": "4260c634b8eaa789",
+        "type": "tab",
+        "label": "Flow 4",
+        "disabled": true,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9a1358ae444bf144",
+        "type": "mqtt in",
+        "z": "4260c634b8eaa789",
+        "name": "",
+        "topic": "sensor/data",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "32f24c8435ba22f0",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 110,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "98143924125c2c5d",
+        "type": "debug",
+        "z": "4260c634b8eaa789",
+        "name": "debug 12",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "900d457ff5d9c905",
+        "type": "mysql",
+        "z": "4260c634b8eaa789",
+        "mydb": "1721d0aa0153c53f",
+        "name": "sensor mysql",
+        "x": 610,
+        "y": 200,
+        "wires": [
+            [
+                "98143924125c2c5d"
+            ]
+        ]
+    },
+    {
+        "id": "350b973d1d109b9a",
+        "type": "function",
+        "z": "4260c634b8eaa789",
+        "name": "function 1",
+        "func": "const temperature = msg.payload.temperature\nconst humidity = msg.payload.humidity\n\nmsg.payload = [temperature, humidity];\nmsg.topic = \"INSERT INTO sensor (`temperature`, `humidity`) VALUES (?, ?);\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 200,
+        "wires": [
+            [
+                "900d457ff5d9c905"
+            ]
+        ]
+    },
+    {
+        "id": "ebab4029075d3aa2",
+        "type": "debug",
+        "z": "4260c634b8eaa789",
+        "name": "debug 13",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 380,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "b1c811b48d40582c",
+        "type": "mongodb3 in",
+        "z": "4260c634b8eaa789",
+        "service": "_ext_",
+        "configNode": "7f22a0ab28ee12e9",
+        "name": "insertOne",
+        "collection": "sensor",
+        "operation": "insertOne",
+        "x": 640,
+        "y": 320,
+        "wires": [
+            [
+                "98143924125c2c5d"
+            ]
+        ]
+    },
+    {
+        "id": "41e72f2707cf895b",
+        "type": "day.js",
+        "z": "4260c634b8eaa789",
+        "name": "",
+        "inputFormat": "",
+        "inputTimezone": "",
+        "outputFormat": "ISOString",
+        "costumFormatOutput": "YYYY-MM-DDTHH:mm:ssZ",
+        "outputTimezone": "utc",
+        "inputProperty": "payload",
+        "outputProperty": "date",
+        "manipulateOperation": "",
+        "manipulateUnit": "",
+        "manipulateAmount": "",
+        "x": 290,
+        "y": 320,
+        "wires": [
+            [
+                "ba5e7f07784209c1"
+            ]
+        ]
+    },
+    {
+        "id": "ba5e7f07784209c1",
+        "type": "function",
+        "z": "4260c634b8eaa789",
+        "name": "function 2",
+        "func": "const temperature = msg.payload.temperature\nconst humidity = msg.payload.humidity\nconst date = msg.date\n\nmsg.payload ={\n    \"temperature\": temperature,\n    \"humidity\": humidity,\n    \"date\": date\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 320,
+        "wires": [
+            [
+                "b1c811b48d40582c"
+            ]
+        ]
+    },
+    {
+        "id": "32f24c8435ba22f0",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "1721d0aa0153c53f",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "node-red-api",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "7f22a0ab28ee12e9",
+        "type": "mongodb3",
+        "uri": "mongodb://127.0.0.1:27017/iot_db",
+        "name": "",
+        "options": "",
+        "parallelism": "-1"
+    }
+]
